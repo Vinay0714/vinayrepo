@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('clone SCM from git hub') {
+            steps {
+                echo 'cloning fb code'
+				git 'https://github.com/wakaleo/game-of-life.git'
+            }
+        }
+		
+		stage('biuld artifcat') {
+            steps {
+                echo 'building code using maven'
+				sh 'mvn clean install'
+            }
+        }
+		
+		stage('deploy to tomcat') {
+            steps {
+                echo 'deploying in tomcat'
+				deploy adapters: [tomcat9(path: '', url: 'http://3.88.114.195:8081')], contextPath: 'fb', war: '**/*.war'
+            }
+        }
+    }
+}
+ 
